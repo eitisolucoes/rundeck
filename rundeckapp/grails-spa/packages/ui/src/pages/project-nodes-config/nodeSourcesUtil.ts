@@ -35,3 +35,21 @@ export async function getProjectNodeSources(): Promise<NodeSource[]> {
     return resp.parsedBody as NodeSource[]
   }
 }
+
+export async function createProjectAcl(name: string, aclContent: string): Promise<any> {
+  const rundeckContext = getRundeckContext()
+  const resp = await client.sendRequest({
+    pathTemplate: '/api/{apiVersion}/system/acl/{aclName}',
+    pathParameters: {aclName: name, apiVersion: rundeckContext.apiVersion},
+    baseUrl: rundeckContext.rdBase,
+    body: aclContent,
+    method: 'POST'
+  })
+  if (!resp.parsedBody) {
+    throw new Error(`Error creating acl for project ${rundeckContext.projectName}`)
+  }
+  else {
+    return resp.parsedBody
+  }
+
+}
